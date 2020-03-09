@@ -3,7 +3,7 @@
     <Header :serverURI="serverURI" :connected="connected"></Header>
 
     <div class="grid" ref="grid">
-      <ControlWindow @start="start"></ControlWindow>
+      <ControlWindow @start="start" @prep="prep"></ControlWindow>
       <StageWindow class="draggable" v-for="(stage,index) in stages" :key="index" :stage="stage" :files="files"></StageWindow>
       <FileWindow :files="files"></FileWindow>
       <StagePreview :serverURI="serverURI" ></StagePreview>
@@ -53,6 +53,7 @@ export default {
     socket.on('stages',(stages)=>{
       this.stages = stages;
     });
+
     socket.on('media-files',(files)=>{
       this.files = files;
     });
@@ -65,7 +66,9 @@ export default {
   methods:{
     start(){
       socket.emit('start')
-
+    },
+    prep(){
+      socket.emit('prep');
     }
   }
 }

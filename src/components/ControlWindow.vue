@@ -8,6 +8,9 @@
       <button @click="$emit('start')">
        Pause
      </button>
+      <button @click="$emit('prep')">
+      prep
+     </button>
    </div>
   </Draggable>
 </template>

@@ -5,13 +5,14 @@
     </header>
     <!-- <button  @click="opened = !opened">0</button> -->
     <div class="content" v-if="opened">
-      Size: {{stage.width}}x{{stage.height}}<br>
-      {{stage.fileName}}<br>
       <b>Media:</b>
-       <select name="files">
+       <select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
     </div>
+
+    <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')">start</button>
+    
    </Draggable>
 </template>
 

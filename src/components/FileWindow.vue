@@ -2,9 +2,10 @@
   <Draggable>
    <header>Files</header>
    <div class="content" v-if="opened">
-    <select name="files" multiple size="4">
+    <select name="files" v-model="selectedFile" size="4">
         <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
     </select>
+    {{selectedFile}}
    </div>
   </Draggable>
 </template>
@@ -16,7 +17,8 @@ export default {
   name: 'FileWindow',
   data(){
     return {
-      opened: true
+      opened: true,
+      selectedFile: Object
     };
   },
   props: {

@@ -3,10 +3,19 @@
     <Header :serverURI="serverURI" :connected="connected"></Header>
 
     <div class="grid" ref="grid">
-      <ControlWindow @start="start" @prep="prep"></ControlWindow>
-      <StageWindow class="draggable" v-for="(stage,index) in stages" :key="index" :stage="stage" :files="files"></StageWindow>
-      <FileWindow :files="files"></FileWindow>
-      <StagePreview :serverURI="serverURI" ></StagePreview>
+
+      <!-- <div v-if="connected"> -->
+        <ControlWindow @start="sendStageEvent('*','start','timestamp')"></ControlWindow>
+        <StageWindow class="draggable" v-for="(stage,index) in stages" :key="index" :stage="stage" :files="files"
+        @sendStageEvent="sendStageEvent"
+        ></StageWindow>
+        <ClientWindow :clients="clients"></ClientWindow>
+        <FileWindow :files="files"></FileWindow>
+        <StagePreview :serverURI="serverURI" ></StagePreview>
+<!-- 
+      </div>
+
+      <setup-window v-else></setup-window> -->
     </div>
   </div>
 </template>
@@ -16,6 +25,8 @@ import StageWindow from './components/StageWindow.vue'
 import StagePreview from './components/StagePreview.vue'
 import ControlWindow from './components/ControlWindow.vue'
 import FileWindow from './components/FileWindow.vue'
+import ClientWindow from './components/ClientWindow.vue'
+// import SetupWindow from './components/SetupWindow.vue'
 import Header from './components/Header.vue'
 import io from "socket.io-client";
 
@@ -28,12 +39,15 @@ export default {
    StagePreview,
    ControlWindow,
    FileWindow,
+   ClientWindow,
+  //  SetupWindow,
    Header
   },
   data(){
     return{
      stages:[],
      files:[],
+     clients:[],
      serverURI:'',
      connected:false
     }
@@ -46,31 +60,39 @@ export default {
 
     socket = io.connect(this.serverURI+'/ui');
 
-    socket.on('connect',()=>{
-      console.log('connected');
-      this.connected = true;
-    })
-    socket.on('stages',(stages)=>{
-      this.stages = stages;
+    socket.on('projectUpdate',(project)=>{
+      this.stages = project.stages;
     });
-
-    socket.on('media-files',(files)=>{
+    socket.on('clientsUpdate', (clients)=>{
+      this.clients = clients;
+    });
+    socket.on('filesUpdate', (files)=>{
       this.files = files;
     });
 
-    socket.on('disconnect',()=>{
-      console.log('disconnected');
-      this.connected = false;
+
+    socket.on('connect',()=>{
+      this.connected = true;
     })
+    socket.on('disconnect',()=>{
+      this.connected = false;
+    });
+
   },
   methods:{
-    start(){
-      socket.emit('start')
-    },
-    prep(){
-      socket.emit('prep');
+    sendStageEvent(to, event, data = ''){
+      console.log(event,to,data)
+      socket.emit('stageEvent', to, event, data)
     }
+  },
+  watch: {
+    stages: {
+     handler(stages){
+       socket.emit('updateStages', stages)
+     },
+     deep: true
   }
+}
 }
 </script>
 
@@ -115,6 +137,7 @@ button, input,select{
   font-weight: bold;
   transition: 0.2s background, 0.2s border-color;
   margin-bottom: 5px;
+  border-radius: 0;
 }
 button:hover{
   border:1px solid #191A1E;
@@ -128,7 +151,6 @@ input{
 }
 select{
     background: none;
-    padding:0;
 }
 select option{
   border-bottom: 1px solid  #262832;

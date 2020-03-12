@@ -16,7 +16,7 @@ export default {
   name: 'StagePreview',
   data(){
     return {
-      URL: '/stage?id=preview'
+      URL: '/stage?id=2'
     };
   },
   props:{

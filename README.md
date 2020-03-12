@@ -1,4 +1,5 @@
-# front-end
+# solv.us ui
+This UI mirrors the state of the [solv.us](https://solv.us/) server. The most recent commit is automatically build and accessible at [ui.solv.us](https://ui.solv.us/)
 
 ## Project setup
 ```

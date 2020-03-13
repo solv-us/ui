@@ -4,7 +4,7 @@
         
         <div style="float:right">
             <StatusLED :connected="connected"></StatusLED>
-            <input type="text" v-model="serverURI"/>
+            <input disabled type="text" v-model="serverURI"/>
         </div>
     </header>
 </template>

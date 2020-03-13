@@ -33,5 +33,7 @@ export default {
 </script>
 
 <style scoped>
-
+.window{
+  grid-row: span 3;
+}
 </style>

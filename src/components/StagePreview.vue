@@ -31,8 +31,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .window{
-  width:600px;
-  height:400px;
+  grid-column: span 4;
+  grid-row: span 3;
 }
 iframe{
   border:none;

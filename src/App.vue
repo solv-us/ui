@@ -6,12 +6,13 @@
 
       <!-- <div v-if="connected"> -->
         <ControlWindow @start="sendStageEvent('*','start','timestamp')"></ControlWindow>
+        <ClientWindow :clients="clients"></ClientWindow>
+        <!-- <FileWindow :files="files"></FileWindow> -->
+        <StagePreview :serverURI="serverURI" ></StagePreview>
+
         <StageWindow class="draggable" v-for="(stage,index) in stages" :key="index" :stage="stage" :files="files"
         @sendStageEvent="sendStageEvent"
         ></StageWindow>
-        <ClientWindow :clients="clients"></ClientWindow>
-        <FileWindow :files="files"></FileWindow>
-        <StagePreview :serverURI="serverURI" ></StagePreview>
 <!-- 
       </div>
 
@@ -24,7 +25,7 @@
 import StageWindow from './components/StageWindow.vue'
 import StagePreview from './components/StagePreview.vue'
 import ControlWindow from './components/ControlWindow.vue'
-import FileWindow from './components/FileWindow.vue'
+// import FileWindow from './components/FileWindow.vue'
 import ClientWindow from './components/ClientWindow.vue'
 // import SetupWindow from './components/SetupWindow.vue'
 import Header from './components/Header.vue'
@@ -38,7 +39,7 @@ export default {
    StageWindow,
    StagePreview,
    ControlWindow,
-   FileWindow,
+  //  FileWindow,
    ClientWindow,
   //  SetupWindow,
    Header
@@ -53,11 +54,21 @@ export default {
     }
   },
   mounted(){
-    this.serverURI =
+
+    
+  // Get the Stage ?id= parameter from the url.
+  let params = new URLSearchParams(document.location.search.substring(1));
+  let serverURI = params.get("server");
+
+  if(serverURI){
+    this.serverURI = serverURI + ':8080'
+  }else{
+     this.serverURI =
       process.env.NODE_ENV === "development"
         ? window.location.hostname + ":8080"
         : window.location.host;
-
+  }
+  
     socket = io.connect(this.serverURI+'/ui');
 
     socket.on('projectUpdate',(project)=>{
@@ -117,8 +128,8 @@ html,body,.screen,#app,.grid{
     background-position:-10px -10px;
     padding:20px 0 0 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 240px);
-    grid-template-rows:repeat(auto-fill, 240px);
+    grid-template-columns: repeat(auto-fill, 120px);
+     grid-template-rows: repeat(auto-fill, 120px);
     grid-gap: 20px;
     margin-top:40px;
     position: absolute;

@@ -52,15 +52,16 @@ export default {
 
 <style scoped>
 .window{
-  width: 200px;
   background:#4f5468;
   border:1px solid #4f5468;
   color:#191A1E;
   margin-bottom:20px;
-  height: max-content;
+  height: 100%;
   touch-action: none;
   user-select: none;
   overflow: hidden;
+  grid-column: span 2;
+  grid-row: span 2;
 }
 header{
   width:100%;

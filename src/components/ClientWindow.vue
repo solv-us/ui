@@ -6,7 +6,8 @@
         <option v-for="(client,index) in clients" :value="index" :key="index">{{client.data.name}}</option>
     </select>
     <div v-if="clients[selectedClient]">
-      {{clients[selectedClient].data }}
+      <b>size:</b> {{clients[selectedClient].data.width}}x{{clients[selectedClient].data.width}}, {{clients[selectedClient].data.isFullScreen ? 'Fullscreen' : 'Not fullscreen'}}<br>
+      <b>{{clients[selectedClient].data.media}}:</b> {{clients[selectedClient].data.loaded ? 'not loaded' : 'loaded' }}<br>
     </div>
    </div>
   </Draggable>
@@ -28,14 +29,12 @@ export default {
   },
   components:{
     Draggable
-  },
-  mounted() {
   }
 }
 </script>
 
 <style scoped>
-.content{
-  height:500px;
+.window{
+  grid-row: span 3;
 }
 </style>

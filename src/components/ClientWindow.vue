@@ -4,6 +4,7 @@
    <div class="content" v-if="opened">
     <select name="clients" size="2" v-model="selectedClient">
         <option v-for="(client,index) in clients" :value="index" :key="index">{{client.data.name}}</option>
+  
     </select>
     <div v-if="clients[selectedClient]">
       <b>size:</b> {{clients[selectedClient].data.width}}x{{clients[selectedClient].data.width}}, {{clients[selectedClient].data.isFullScreen ? 'Fullscreen' : 'Not fullscreen'}}<br>

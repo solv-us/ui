@@ -103,6 +103,9 @@
             :value="index"
             :key="index"
           >{{project}}</option>
+             <option>jkaas</option>
+        <option>jkaas</option>
+        <option>jkaas</option>
         </select>
         <button
           :disabled="!selectedProject"

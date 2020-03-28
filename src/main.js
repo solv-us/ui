@@ -7,6 +7,8 @@ import io from 'socket.io-client';
 
 Vue.config.productionTip = false
 
+Vue.prototype.$socket;
+
 new Vue({
   store,
   render: h => h(App)

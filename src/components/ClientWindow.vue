@@ -1,6 +1,6 @@
 <template>
   <Draggable>
-   <header>Clients</header>
+   <header>Connected Clients</header>
    <div class="content" v-if="opened">
     <select name="clients" size="2" v-model="selectedClient">
         <option v-for="(client,index) in clients" :value="index" :key="index">{{client.data.name}}</option>

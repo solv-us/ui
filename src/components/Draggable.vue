@@ -71,8 +71,12 @@ header{
   background:#262832;
   padding: 10px;
   color:#fff;
+  font-size:0.9em;
 }
 .content{
   padding:5px;
+}
+h1,h2,h3,h4,h5,h6{
+  color:#fff;
 }
 </style>

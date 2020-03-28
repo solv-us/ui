@@ -35,6 +35,7 @@ header{
   background:#262832;
   padding: 10px;
   color:#fff;
+  font-size:0.2em;
 }
 .content{
   padding:5px;

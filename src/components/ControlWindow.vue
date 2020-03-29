@@ -3,13 +3,10 @@
    <header>Controls</header>
    <div class="content" v-if="opened">
      <button @click="$emit('start')">
-       Start / Reset
+       Start / Reset all
      </button>
       <button @click="$emit('start')">
-       Pause
-     </button>
-      <button @click="$emit('prep')">
-      prep
+       Pause all
      </button>
    </div>
   </Draggable>

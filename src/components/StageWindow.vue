@@ -1,14 +1,15 @@
 <template>
    <Draggable>
     <header class="drag-handle">Stage #{{stage.id}} 
-      <StatusLED></StatusLED>
+      <StatusLED :connected="clientsReady > 0"></StatusLED>
     </header>
-    <!-- <button  @click="opened = !opened">0</button> -->
+
     <div class="content" v-if="opened">
       <b>Media:</b>
        <select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
+       <b>Clients:</b> {{ clients.length }} / {{ clientsReady }}
     </div>
 
     <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')">start</button>
@@ -29,10 +30,13 @@ export default {
   },
   props: {
     stage: Object,
-    files: Array
+    files: Array,
+    clients:Array
   },
-  mounted() {
-
+  computed:{
+    clientsReady(){
+      return this.clients.filter(x => x.data.loaded).length
+    }
   },
   components:{
     Draggable,

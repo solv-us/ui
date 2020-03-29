@@ -23,6 +23,7 @@
           v-for="(stage,index) in stages"
           :key="index"
           :stage="stage"
+          :clients="getClientsConnectedToStage(stage)"
           :files="files"
           @sendStageEvent="sendStageEvent"
         ></StageWindow>
@@ -134,6 +135,9 @@ export default {
         this.connected = false;
       });
 
+    },
+    getClientsConnectedToStage(stage){
+      return this.clients.filter(x => x.data.stageId == stage.id)
     }
   },
   watch: {

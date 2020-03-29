@@ -90,8 +90,8 @@
         <br /><br />
 
       </div>
-      <div v-else>
-        <h1>Open a project</h1>
+      <div v-else style="width:300px">
+        <p>There is no project running on this server yet. Open one:</p>
 
         <select
           name="projects"
@@ -100,19 +100,20 @@
         >
           <option
             v-for="(project,index) in projects"
-            :value="index"
+            :value="project"
             :key="index"
           >{{project}}</option>
-             <option>jkaas</option>
-        <option>jkaas</option>
-        <option>jkaas</option>
         </select>
         <button
           :disabled="!selectedProject"
-          @click="$emit('openProject')"
+          @click="$emit('openProject', selectedProject)"
         >Open {{projects[selectedProject]}}</button>
+        <hr/>
 
-        <button @click="$emit('openProject')">Create empty project</button>
+        <p>Or, create a new project:</p>
+        <input type="text" v-model="newProjectName" placeholder="Project name"/>
+        <button @click="$emit('createProject', newProjectName)">Create empty project</button>
+
       </div>
     </div>
   </Draggable>
@@ -126,7 +127,9 @@ export default {
   data() {
     return {
       opened: true,
-      selectedProject: ""
+      selectedProject: '',
+      newProjectName:'',
+
     };
   },
   props: ["value", "connected", "projects"],
@@ -146,7 +149,7 @@ h1 b {
 }
 .window {
   width: 400px;
-  height: 400px;
+  height: 440px;
 }
 .content {
   display: flex;
@@ -155,5 +158,10 @@ h1 b {
 }
 .welcome {
   padding: 50px;
+}
+
+input[type=text]{
+  width:100%;
+  padding:10px;
 }
 </style>

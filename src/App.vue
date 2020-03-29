@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <Header
+      :activeProjectName="activeProject.name"
+      @closeProject="closeProject"
       :serverURI="serverURI"
       :connected="connected"
     ></Header>
@@ -12,6 +14,7 @@
       >
         <ControlWindow @start="sendStageEvent('*','start','timestamp')"></ControlWindow>
         <ClientWindow :clients="clients"></ClientWindow>
+        <StagesWindow :stages="stages"></StagesWindow>
         <!-- <FileWindow :files="files"></FileWindow> -->
         <StagePreview :serverURI="serverURI"></StagePreview>
 
@@ -29,7 +32,7 @@
         ref="grid"
         v-else
       >
-        <SetupWindow v-model="serverURI" :connected="connected" @openProject="openProject" :projects="projects">
+        <SetupWindow v-model="serverURI" :connected="connected" @openProject="openProject" @createProject="createProject"  :projects="projects">
         </SetupWindow>
       </div>
     </section>
@@ -37,7 +40,9 @@
 </template>
 
 <script>
+import StagesWindow from "./components/StagesWindow.vue";
 import StageWindow from "./components/StageWindow.vue";
+
 import StagePreview from "./components/StagePreview.vue";
 import ControlWindow from "./components/ControlWindow.vue";
 // import FileWindow from './components/FileWindow.vue'
@@ -49,6 +54,7 @@ import io from "socket.io-client";
 export default {
   name: "App",
   components: {
+    StagesWindow,
     StageWindow,
     StagePreview,
     ControlWindow,
@@ -63,6 +69,7 @@ export default {
       files: [],
       clients: [],
       projects:[],
+      activeProject:{},
       serverURI: "",
       connected: false,
       projectOpen:false
@@ -80,17 +87,21 @@ export default {
           ? window.location.hostname + ":8080"
           : window.location.host;
     }
-
     this.$socket = io.connect(this.serverURI + "/ui");
     this.socketListeners();
   },
   methods: {
     sendStageEvent(to, event, data = "") {
-      console.log(event, to, data);
       this.$socket.emit("stageEvent", to, event, data);
     },
-    openProject(){
-      this.projectOpen = true;
+    openProject(projectName){
+      this.$socket.emit('openProject', projectName)
+    },
+    closeProject(){
+      this.$socket.emit('closeProject');
+    },
+    createProject(projectName){
+      this.$socket.emit('createProject', projectName)
     },
     socketListeners(){
 
@@ -98,7 +109,16 @@ export default {
         this.projects = projects;
       });
       this.$socket.on("projectUpdate", project => {
-        this.stages = project.stages;
+        if(project){
+          this.activeProject = project;
+          this.stages = project.stages;
+          if(!this.projectOpen)
+          this.projectOpen = true;
+        }else{
+          this.activeProject = {};
+          this.stages = [];
+          this.projectOpen = false;
+        }
       });
       this.$socket.on("clientsUpdate", clients => {
         this.clients = clients;
@@ -158,8 +178,8 @@ body,
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 120px);
-  grid-template-rows: repeat(auto-fill, 120px);
+  grid-template-columns: repeat(auto-fill, 60px);
+  grid-template-rows: repeat(auto-fill, 60px);
   grid-gap: 20px;
   padding:20px;
   padding-top: 60px;
@@ -233,5 +253,11 @@ select option:checked, select option:focus:checked{
 background: linear-gradient(#313440,#313440);
 background-color:#050507!important; /* for IE */
 color:#fff!important;
+}
+
+hr{
+  border:none;
+  border-bottom:1px solid #262832;
+  background:none;
 }
 </style>

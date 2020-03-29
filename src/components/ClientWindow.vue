@@ -2,9 +2,8 @@
   <Draggable>
    <header>Connected Clients</header>
    <div class="content" v-if="opened">
-    <select name="clients" size="2" v-model="selectedClient">
-        <option v-for="(client,index) in clients" :value="index" :key="index">{{client.data.name}}</option>
-  
+    <select name="clients" size="5" v-model="selectedClient">
+        <option v-for="(client,index) in clients" :value="index" :key="index">{{client.id }}</option>
     </select>
     <div v-if="clients[selectedClient]">
       <b>size:</b> {{clients[selectedClient].data.width}}x{{clients[selectedClient].data.width}}, {{clients[selectedClient].data.isFullScreen ? 'Fullscreen' : 'Not fullscreen'}}<br>
@@ -36,6 +35,7 @@ export default {
 
 <style scoped>
 .window{
-  grid-row: span 3;
+  grid-row: span 6;
+  grid-column: span 3;
 }
 </style>

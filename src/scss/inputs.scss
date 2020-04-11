@@ -1,0 +1,51 @@
+input, textarea, select {
+  width: 100%;
+  padding: $inputPadding;
+  appearance: none;
+  background:$primaryDark;
+  border: 1px solid $primaryLight;
+  color: $colorLight;
+  transition: 0.2s background, 0.2s border-color, 0.2s color;
+  margin:$inputMargin;
+  border-radius:$borderRadius;
+  
+ outline: none;
+}
+input::placeholder {
+    color:$primaryLightest;
+}
+textarea:focus, input:focus, select:focus {
+    border-color:$primaryLightest;
+}
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,select::-moz-focus-inner {
+    border: none;
+}  
+
+select[size] {
+  background: $primaryDark;
+  border:1px solid $primaryLight;
+  padding: 0;
+  
+}
+select option {
+  border-bottom: 1px solid $primary;
+  padding: $inputPadding;
+  background: $primary;
+  color: $colorLight;
+}
+select option:hover,
+select option:focus,
+select option:active {
+    background: linear-gradient($primaryLight,$primaryLight);
+    background-color: $primaryLight !important; /* for IE */
+    color: $colorLight!important;
+}
+
+select option:checked, select option:focus:checked{
+    background: linear-gradient($primaryLight,$primaryLight);
+    background-color:$primaryLighter!important; /* for IE */
+    color:$colorLight!important;
+}

@@ -3,7 +3,7 @@
     <header>Stage Preview
         <input type="text" v-model="URL">
     </header>
-    <iframe :src="serverURI + URL" allowfullscreen>
+    <iframe :src="serverURI + URL" allowfullscreen scrolling="no">
     </iframe>
 
    </Draggable>
@@ -28,11 +28,10 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .window{
-  grid-column: span 8;
-  grid-row: span 6;
+width:580px;
+height:360px;
 }
 iframe{
   border:none;

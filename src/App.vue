@@ -3,11 +3,13 @@
     <Header
       :activeProjectName="activeProject.name"
       @closeProject="closeProject"
+      @deleteProject="deleteProject"
       :serverURI="serverURI"
       :connected="connected"
+      :drawerOpen="drawerOpen"
     ></Header>
     <div class="container">
-    <WindowDrawer :drawer-open="drawerOpen" :stages="stages" />
+    <WindowDrawer :drawer-open="drawerOpen&&projectOpen" :stages="stages" />
     <section class="workspace" :class="workspaceIsLocked ? 'locked' : ''" ref="workspace">
        <div
         class="grid"
@@ -42,17 +44,20 @@
         </template>
       </div>
       <div
-        class="center full-size"
-        ref="grid"
+        class="center full-size grid"
         v-else
       >
-        <SetupWindow v-if="!projectOpen" v-model="serverURI" :connected="connected" @openProject="openProject" @createProject="createProject"  :projects="projects">
+        <SetupWindow v-if="!projectOpen || !connected" v-model="serverURI" :connected="connected" @openProject="openProject" @createProject="createProject"  :projects="projects">
         </SetupWindow>
         <div v-else class="text-centered">
           <h1><i class="material-icons md-48">widgets</i></h1>
-          <p style="max-width:400px">This is your workspace. Press <span>D</span> to open the Drawer, and drag a window to the workspace to get started.</p>
+          <p style="max-width:400px">This is your workspace. Press <span>D</span> to toggle the <i>Window Drawer</i>, and drag a window to the workspace to get started.</p>
         </div>
       </div>
+      <div class="workspace-info">
+        <button class="icon" data-help="(Un)lock your workspace from moving & resizing windows (L)" @click="workspaceIsLocked = !workspaceIsLocked">{{ workspaceIsLocked ? 'lock_open' : 'lock'}}</button>  
+      </div>
+
     </section>
     </div>
   </div>
@@ -97,7 +102,7 @@ export default {
       connected: false,
       projectOpen:false,
       drawerOpen:false,
-      workspaceIsLocked:false
+      workspaceIsLocked:true
     };
   },
   mounted() {
@@ -159,6 +164,16 @@ export default {
     closeProject(){
       this.$socket.emit('closeProject');
     },
+    deleteProject(){
+        let areYouSure = prompt(" This action cannot be undone. This will permanently delete the '"+this.activeProject.name +"' project\n\n Please type '"+this.activeProject.name +"' to confirm:")
+        if(areYouSure === this.activeProject.name){
+          this.$socket.emit('deleteProject');
+        }else if(areYouSure === null){
+          return;
+        }else{
+          this.deleteProject();
+        }
+     },
     createProject(projectName){
       this.$socket.emit('createProject', projectName)
     },
@@ -229,18 +244,10 @@ export default {
 </script>
 
 <style lang="scss">
-* {
-  box-sizing: border-box!important;
-}
-body{
-    font-family: "FiraCode-Retina", "Fira Code", monospace;
-    font-size: 0.95em;
-    color:#fff;
-}
-html,
 body,
-.screen,
+html,
 #app,
+.screen,
 .container,
 .workspace{
   width: 100%;
@@ -257,15 +264,21 @@ body,
 }
 
 .workspace{
-  background: #191a1e;
+  background:$primaryDark;
   overflow:scroll;
   scroll-behavior: smooth;
+  &.locked{
+    overflow: hidden;
+  }
 }
-.locked{
-  overflow: hidden;
+.workspace-info{
+  position:absolute;
+  top:40px;
+  right:0;
+  padding:$inputPadding;
 }
 .grid {
-  background-image: radial-gradient(#4f5468 1px, transparent 0);
+  background-image: radial-gradient($primaryDisabled 1px, transparent 0);
     background-size: 20px 20px;
   background-position: -10px -10px;
   // display: grid;
@@ -277,154 +290,4 @@ body,
   width: 2000px;
   height: 2000px;
 }
-.full-size {
-  width: 100%;
-  height: 100%;
-}
-.center{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.text-centered{
-  text-align: center;;
-}
-button,
-input,
-select {
-  width: 100%;
-  padding: 5px;
-  appearance: none;
-  background: #191a1e;
-  border: 1px solid #fff;
-  color: #fff;
-  font-weight: bold;
-  transition: 0.2s background, 0.2s border-color, 0.2s color;
-  margin: 2px 0;
-  border-radius: 0;
-}
-button:hover {
-  border: 1px solid #191a1e;
-  background: #4f5468;
-}
-button.danger{
-  border-color: red;
-}
-button.danger:hover{
-  background:red;
-}
-input {
-  width: auto;
-  border: 1px solid #4f5468;
-}
-select {
-  background: none;
-  padding: 0;
-}
-select option {
-  border-bottom: 1px solid #262832;
-  padding: 10px;
-   background: #262832;
-}
-
-
-
-select option:hover,
-select option:focus,
-select option:active {
-background: linear-gradient(#4f5468,#4f5468);
-background-color: #4f5468 !important; /* for IE */
-color: #fff!important;
-}
-
-select option:checked, select option:focus:checked{
-background: linear-gradient(#313440,#313440);
-background-color:#050507!important; /* for IE */
-color:#fff!important;
-}
-
-hr{
-  border:none;
-  border-bottom:1px solid #262832;
-  background:none;
-}
-
-/* On Hover Help attribute */
-[data-help]:hover:after {
-    opacity: 1;
-    transition: all 0.1s ease 0.1s;
-    visibility: visible;
-}
-[data-help]:after {
-    content: attr(data-help);
-    color: #fff;
-    border:1px solid #4f5468;
-    border-top: none;
-    background:#262832;
-    position: fixed;
-    top:40px;
-    right:0;
-    width:200px;
-    text-align: center;
-    padding: 10px;
-    white-space: nowrap;
-    opacity: 0;
-    z-index: 99999;
-    visibility: hidden;
-    font-size:12px;
-    font-weight: 300;
-}
-[data-help]:after:after{
-  background-color: #4f5468;
-}
-
-/* Font Icons */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url(assets/material-icons/MaterialIcons-Regular.woff2) format('woff2'),
-    url(assets/material-icons/MaterialIcons-Regular.woff) format('woff'),
-    url(assets/material-icons/MaterialIcons-Regular.ttf) format('truetype');
-}
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 20px;
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: 'liga';
-}
-/* Rules for sizing the icon. */
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
-
-/* Rules for using icons as black on a light background. */
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
-
-/* Rules for using icons as white on a dark background. */
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
-
 </style>

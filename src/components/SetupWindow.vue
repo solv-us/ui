@@ -2,7 +2,7 @@
   <Draggable>
     <header>Welcome</header>
     <div
-      class="content text-centered"
+      class="content text-centered center"
       v-if="opened"
     >
       <div
@@ -112,7 +112,7 @@
 
         <p>Or, create a new project:</p>
         <input type="text" v-model="newProjectName" placeholder="Project name"/>
-        <button @click="$emit('createProject', newProjectName)" :disabled="disabled">Create empty project</button>
+        <button @click="$emit('createProject', newProjectName)" :disabled="createButtonDisabled">Create empty project</button>
 
       </div>
     </div>
@@ -137,15 +137,15 @@ export default {
     Draggable
   },
   computed:{
-    disabled(){
-      return !this.newProjectName.length > 0;
+    // Disable create button if no name is specified, or the name already exists
+    createButtonDisabled(){
+      return this.newProjectName.length < 1 || this.projects.includes(this.newProjectName+'.sproject');
     }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 h1 {
   font-weight: bold;
 }
@@ -156,17 +156,7 @@ h1 b {
   width: 400px;
   height: 440px;
 }
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .welcome {
   padding: 50px;
-}
-
-input[type=text]{
-  width:100%;
-  padding:10px;
 }
 </style>

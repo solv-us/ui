@@ -1,11 +1,11 @@
 <template>
    <Draggable>
     <header @click="opened = !opened">Stage #{{stage.id}} ({{ clientsReady }}/{{ clients.length }})
-      <StatusLED :connected="clientsReady > 0"></StatusLED>
+      <StatusLED :connected="clientsReady > 0" data-help="This light turns green when at least 1 connected client is ready for perfomance"></StatusLED>
     </header>
 
     <div class="content" v-if="opened">
-      <b>Media:</b>
+      <span>Media:</span>
        <select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
@@ -43,8 +43,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .window{
   grid-column: span 3;
   width:220px;

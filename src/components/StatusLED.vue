@@ -11,17 +11,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .statusLED{
   width:8px;
   height:8px;
   border-radius: 4px;
-  background:#4f5468;
+  background:$primaryLight;
   position: relative;
   display: inline-block;
   margin:0 5px;
 }
 .active{
-  background: #0ed600;
+  background: $success;
 }
 </style>

@@ -1,0 +1,38 @@
+button {
+  width: 100%;
+  padding: $inputPadding;
+  appearance: none;
+  background:$primary;
+  border: 1px solid $primaryLighter;
+  color: $colorLight;
+  font-weight: bold;
+  transition: 0.2s background, 0.2s border-color, 0.2s color;
+  margin: $inputMargin;
+  border-radius:$borderRadius;
+  &:hover {
+    border: 1px solid$primaryDark;
+    background:  $primaryLight;
+  }
+  outline:none;
+}
+
+button.danger {
+  border-color: $danger;
+  &:hover {
+    background: $danger;
+  }
+}
+button:disabled {
+  background: $primaryDisabled;
+  border: 1px solid $primaryLight;
+  color: $primaryLight;
+}
+
+button.icon{
+    width:auto;
+    border-radius:$borderRadius;
+    padding:2px;
+    margin:4px;
+    font-size: 1.4em;
+    border: 1px solid $primaryLighter;
+}

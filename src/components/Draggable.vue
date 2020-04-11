@@ -82,10 +82,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .window {
-  background: #4f5468;
-  border: 1px solid #4f5468;
+  background: $primaryDisabled;
+  border: 1px solid $primaryLight;
   color: #fff;
   margin-bottom: 20px;
   width:fit-content;
@@ -93,9 +93,9 @@ export default {
   touch-action: none;
   user-select: none;
   overflow: hidden;
-  grid-column: span 2;
-  grid-row: span 2;
-  transition: grid-row 0.2s, grid-column 0.2s;
+  display: flex;
+  flex-direction: column;
+  border-radius:$borderRadius;
 }
 .window .content {
   font-size: 0.9em;
@@ -104,14 +104,25 @@ header {
   width: 100%;
   top: 0;
   left: 0;
-  background: #262832;
-  padding: 10px;
+  background: $primary;
+  padding: $windowPadding;
   color: #fff;
-  font-size: 0.9em;
-  text-align: center;
+  font-size: 1em;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  input{
+    width:auto;
+  }
+  button.icon{
+      margin:-3px 0;
+  }
 }
 .content {
-  padding: 5px;
+  padding: $windowPadding;
+  height: 100%;
+  overflow:auto;
+  border-top:1px solid $primaryLight;
 }
 h1,
 h2,

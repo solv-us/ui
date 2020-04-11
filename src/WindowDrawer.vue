@@ -69,13 +69,12 @@ export default {
   width: 240px;
   margin-top: 40px;
   margin-left: -240px;
-  padding:20px;
-  background: #4f5468;
-  border-right:1px solid #262832;
+  padding:$windowPadding;
+  background: $primary;
+  border-right:1px solid $primary;
   z-index: 1;
   top: 0;
   left: 0;
-  padding-top: 20px;
   transition: margin-left 0.1s;
   &.open {
     margin-left: 0;
@@ -84,7 +83,10 @@ export default {
 p{
   color:#fff;
   text-align: center;
-  font-size: 0.7em;
+  font-size: 0.8em;
   margin:10px 0;
+}
+hr{
+  border-color: $primaryLight;
 }
 </style>

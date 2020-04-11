@@ -1,0 +1,50 @@
+// Import all scss compontents
+@import "material-icons.scss";
+@import "help-tooltip.scss";
+@import "inputs.scss";
+@import "buttons.scss";
+
+* {
+  box-sizing: border-box!important;
+}
+p,span,h1,h2,h3,h4,h5,h6{
+      user-select: none;    
+}
+body{
+    font-family: $fontFamily;
+    font-size: 0.8em;
+    color:$colorLight;
+}
+
+.full-width{
+    width: 100%;
+}
+.full-size {
+  width: 100%;
+  height: 100%;
+}
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height:100%;
+}
+.text-centered{
+  text-align: center;;
+}
+
+hr{
+  border:none;
+  border-bottom:1px solid $primary;
+  margin: $windowPadding 0;
+  width:100%;
+  background:none;
+}
+
+.m-5{
+    margin:5px!important;
+}
+.b-0{
+    border-radius: 0;
+}

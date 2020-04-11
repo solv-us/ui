@@ -1,6 +1,6 @@
 <template>
    <Draggable>
-    <header class="drag-handle">Stage #{{stage.id}} 
+    <header @click="opened = !opened">Stage #{{stage.id}} ({{ clientsReady }}/{{ clients.length }})
       <StatusLED :connected="clientsReady > 0"></StatusLED>
     </header>
 
@@ -9,11 +9,9 @@
        <select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
-       <b>Clients:</b> {{ clients.length }} / {{ clientsReady }}
-    </div>
+      <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')" :data-help="'Send the \'start\' event to Stage #'+stage.id">start</button>
 
-    <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')">start</button>
-    
+    </div>
    </Draggable>
 </template>
 
@@ -25,7 +23,7 @@ export default {
   name: 'StageWindow',
   data(){
     return {
-      opened: true
+      opened: false
     };
   },
   props: {
@@ -49,6 +47,7 @@ export default {
 <style scoped>
 .window{
   grid-column: span 3;
-  grid-row: span 3;
+  width:220px;
+  height:auto;
 }
 </style>

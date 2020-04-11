@@ -112,7 +112,7 @@
 
         <p>Or, create a new project:</p>
         <input type="text" v-model="newProjectName" placeholder="Project name"/>
-        <button @click="$emit('createProject', newProjectName)">Create empty project</button>
+        <button @click="$emit('createProject', newProjectName)" :disabled="disabled">Create empty project</button>
 
       </div>
     </div>
@@ -135,6 +135,11 @@ export default {
   props: ["value", "connected", "projects"],
   components: {
     Draggable
+  },
+  computed:{
+    disabled(){
+      return !this.newProjectName.length > 0;
+    }
   }
 };
 </script>

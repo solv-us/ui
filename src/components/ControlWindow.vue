@@ -1,13 +1,18 @@
 <template>
-  <Draggable>
-   <header>Controls</header>
+  <Draggable :class="editMode ? 'editing' : ''">
+   <header @click="editMode = !editMode" >Stage Events</header>
    <div class="content" v-if="opened">
-     <button @click="$emit('start')">
-       Start / Reset all
-     </button>
-      <button @click="$emit('start')">
-       Pause all
-     </button>
+    
+     <div v-for="(event, index) in events" :key="index">
+        <button @click="$emit('stageEvent', event.to, event.code)" v-if="!editMode">
+         {{event.name}}
+        </button>
+        <div v-else>
+          <input type="text" v-model="event.name" />
+          <input type="text" v-model="event.code" />
+        </div>
+     </div>
+
    </div>
   </Draggable>
 </template>
@@ -19,11 +24,13 @@ export default {
   name: 'ControlWindow',
   data(){
     return {
-      opened: true
+      opened: true,
+      editMode: false,
     };
   },
   props: {
-    client: Object
+    client: Object,
+    events: Object
   },
   components:{
     Draggable
@@ -37,5 +44,11 @@ export default {
 <style scoped>
 .window{
   grid-row: span 6;
+}
+.editing{
+  grid-column: span 5;
+}
+input{
+  width:50%;
 }
 </style>

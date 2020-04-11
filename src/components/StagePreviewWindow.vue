@@ -13,7 +13,7 @@
 import Draggable from './Draggable.vue'
 
 export default {
-  name: 'StagePreview',
+  name: 'StagePreviewWindow',
   data(){
     return {
       URL: '/stage?id=1'

@@ -1,13 +1,15 @@
 # solv.us ui
-The user interface [solv.us](https://solv.us/) server. The most recent commit is automatically build and accessible at [ui.solv.us](https://ui.solv.us/)
-
-
+The user interface for the solv.us server. The most recent commit is automatically build and accessible at [ui.solv.us](https://ui.solv.us/).
 
 ## Setup for production
-The easiest way to use the UI is through the online interface. In case you want to run the UI locally, download the ```dist``` folder, place it somewhere on your computer and serve it through a local web-server, for example [serve](https://github.com/zeit/serve). 
+The easiest way to use the UI is through the online interface, but this is not always the best option. In case you want to run the UI locally, download the ```dist``` folder, place it somewhere on your computer and serve it through a local web-server, for example [serve](https://github.com/zeit/serve). 
 
 ## Setup for development
+If you want to help with the development of the user interface, you have to clone the repository:
+
 ```
+git clone https://github.com/solv-us/ui.git
+cd ui
 npm install
 ```
 
@@ -25,6 +27,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

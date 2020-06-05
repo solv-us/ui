@@ -1,91 +1,22 @@
 <template>
-  <Draggable>
-    <header>Welcome</header>
-    <div
-      class="content text-centered center"
-      v-if="opened"
-    >
+  <Draggable :width="400" :height="400">
+    <template v-slot:header>Welcome</template>
+     <template v-slot:content>
+      <div class="text-centered center">
       <div
         v-if="!connected"
         class="welcome"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="60"
-          height="60"
-          viewBox="0 0 80 80"
-        >
-          <defs>
-            <radialGradient
-              cx="56.15%"
-              cy="27.43%"
-              fx="56.15%"
-              fy="27.43%"
-              r="57.526%"
-              gradientTransform="matrix(.5626 -.82673 .8022 .54591 .026 .589)"
-              id="ball-3-a"
-            >
-              <stop
-                stop-color="#F8F7FF"
-                offset="0%"
-              ></stop>
-              <stop
-                stop-color="#DAD8FF"
-                offset="34.827%"
-              ></stop>
-              <stop
-                stop-color="#9B95F3"
-                offset="100%"
-              ></stop>
-            </radialGradient>
-            <filter
-              x="-500%"
-              y="-500%"
-              width="1000%"
-              height="1000%"
-              filterUnits="objectBoundingBox"
-              id="dropshadow-ball-3"
-            >
-              <feOffset
-                dx="24"
-                dy="24"
-                in="SourceAlpha"
-                result="shadowOffsetOuter"
-              ></feOffset>
-              <feGaussianBlur
-                stdDeviation="24"
-                in="shadowOffsetOuter"
-                result="shadowBlurOuter"
-              ></feGaussianBlur>
-              <feColorMatrix
-                values="0 0 0 0 0.10 0 0 0 0 0.17 0 0 0 0 0.21 0 0 0 0.22 0"
-                in="shadowBlurOuter"
-              ></feColorMatrix>
-            </filter>
-          </defs>
-          <circle
-            cx="40"
-            cy="40"
-            r="40"
-            fill="#FFF"
-            fill-rule="evenodd"
-            style="filter:url(#dropshadow-ball-3)"
-          ></circle>
-          <circle
-            cx="40"
-            cy="40"
-            r="40"
-            fill="url(#ball-3-a)"
-            fill-rule="evenodd"
-          ></circle>
-        </svg>
+        <img src="@/assets/logo.svg" alt="Solvus Logo"/>
         <h1>solv.us <b>ui</b></h1>
-        <p>Please connect to an active solv.us server.</p>
+        <p>Please connect to an active server to use UI.</p>
+        <hr/>
         <b>Server URI</b>&nbsp;<br />
         <input
           type="text"
           :value="value"
           @input="$emit('input',$event.target.value)"
+          class="text-centered"
         >
         <br /><br />
 
@@ -115,7 +46,8 @@
         <button @click="$emit('createProject', newProjectName)" :disabled="createButtonDisabled">Create empty project</button>
 
       </div>
-    </div>
+      </div>
+    </template>
   </Draggable>
 </template>
 
@@ -151,12 +83,5 @@ h1 {
 }
 h1 b {
   font-weight: normal;
-}
-.window {
-  width: 400px;
-  height: 440px;
-}
-.welcome {
-  padding: 50px;
 }
 </style>

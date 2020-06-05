@@ -1,10 +1,8 @@
 <template>
   <Draggable>
-    <header>Stages</header>
-    <div
-      class="content"
-      v-if="opened"
-    >
+   <template v-slot:header>Stage
+   </template>
+    <template v-slot:content>
       <div>
         <div class="button-group">
           <button
@@ -34,7 +32,7 @@
           :stage="stages[selectedStage]"
         ></StageWindow>
       </div>
-    </div>
+    </template>
   </Draggable>
 </template>
 
@@ -86,9 +84,7 @@ export default {
 select{
   height: 100%;
 }
-.button-group{
-  display:flex;
-}
+
 button{
     padding:4px;
 }

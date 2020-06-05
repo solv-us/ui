@@ -1,11 +1,13 @@
 <template>
    <Draggable>
-    <header>Stage Preview
+    <template v-slot:header>Stage Preview
         <input type="text" v-model="URL">
-    </header>
-    <iframe :src="serverURI + URL" allowfullscreen scrolling="no">
-    </iframe>
+    </template>
 
+    <template v-slot:content>
+      <iframe :src="serverURI + URL" allowfullscreen scrolling="no">
+      </iframe>
+    </template>d
    </Draggable>
 </template>
 
@@ -32,6 +34,9 @@ export default {
 .window{
 width:580px;
 height:360px;
+}
+.window.content{
+  padding:0!important;
 }
 iframe{
   border:none;

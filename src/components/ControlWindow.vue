@@ -1,19 +1,19 @@
 <template>
   <Draggable :class="editMode ? 'editing' : ''">
-   <header >Stage Events
+   <template v-slot:header>Stage Events
      <button class="icon" @click="editMode = !editMode" v-if="events.length>0" data-help="Toggle between edit & launch mode">
       {{editMode ? 'done' : 'create'}}
      </button>
-   </header>
-   <div class="content" v-if="opened">
+   </template>
+  <template v-slot:content>
     
      <div v-for="(event, index) in events" :key="index">
         <button @click="$emit('stageEvent', event.to, event.code)" v-if="!editMode">
          {{event.label}}
         </button>
-        <div v-else>
+        <div v-else class="input-group">
           <input type="text" v-model="event.label" />
-          <input type="text" v-model="event.code" class="b-0" />
+          <input type="text" v-model="event.code" />
           <input type="text" v-model="event.to" />
         </div>
      </div>
@@ -29,7 +29,7 @@
           <button @click="editMode=true;events.push({label:'Start all stages', to:'*',code:'start'})">Add a Stage Event</button>
         </div>
       </div>
-   </div>
+   </template>
   </Draggable>
 </template>
 
@@ -58,12 +58,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped class="scss">
 .window{
   width:300px;
   height:200px;
 }
-input{
+.input-group input{
   width:33%;
+  border-radius: 0;
+}
+.input-group:first-child{
+  border-radius: $borderRadius 0;
+}
+.input-group:last-child{
+  border-radius: 0 $borderRadius;
 }
 </style>

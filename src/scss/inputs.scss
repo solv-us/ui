@@ -8,8 +8,10 @@ input, textarea, select {
   transition: 0.2s background, 0.2s border-color, 0.2s color;
   margin:$inputMargin;
   border-radius:$borderRadius;
-  
- outline: none;
+  box-sizing: border-box;
+  height: auto;
+  display: inline-block;
+  outline: none;
 }
 input::placeholder {
     color:$primaryLightest;

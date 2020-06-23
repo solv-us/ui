@@ -3,7 +3,6 @@
     opacity: 1;
     visibility: visible;
 }
-
 [data-help]:after {
     content: attr(data-help);
     display: block;

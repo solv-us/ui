@@ -278,7 +278,7 @@ export default {
        interact(this.$refs.workspace).dropzone({
         accept: ".drag-drop",
         overlap: 0.75,
-        ondrop: event => {
+        ondrop: event => { 
           this.drawerOpen = false;
           console.log(event.dragEvent)
           let type = event.relatedTarget.getAttribute("data-type");

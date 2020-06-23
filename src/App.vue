@@ -170,10 +170,7 @@ export default {
     if (_serverURI) {
       this.serverURI = _serverURI;
     } else {
-      this.serverURI =
-        process.env.NODE_ENV === "development"
-          ? window.location.hostname + ":8080"
-          : window.location.host;
+      this.serverURI = "https://localhost:8843"
     }
     this.$socket = io.connect(this.serverURI + "/ui", {path:'/sockets'});
     this.socketListeners();

@@ -5,7 +5,7 @@ import '@/scss/main.scss'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$socket;
+Vue.prototype.$socket = {};
 
 new Vue({
   store,

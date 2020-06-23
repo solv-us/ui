@@ -3,7 +3,7 @@
     <header>
       <span class="logo">
         <button
-          @click="drawerOpen != drawerOpen"
+          @click="$emit('toggleDrawer')"
           :disabled="!activeProjectName"
           data-help="Click toggle Window Drawer (D)"
           class="icon"
@@ -43,15 +43,19 @@
         />
         <input
           type="text"
-          value="/Daan/Solvus/Projects"
+          :value="publicPath"
           date-help="the media path"
         />
         <button @click="settingsOpened = false;$emit('closeProject')">Close project</button>
-        <hr>
         <button
           class="danger"
           @click="settingsOpened = false;$emit('deleteProject')"
         >Delete project</button>
+        <hr>
+        <input type="text" readonly :value="serverURI"  @focus="$event.target.select()" date-help="The URI of the server"/>
+        <button @click="disconnectFromServer" 
+          date-help="Disconnect from server"
+        >Disconnect from server</button>
       </div>
     </div>
   </div>
@@ -72,7 +76,8 @@ export default {
     serverURI: String,
     connected: Boolean,
     activeProjectName: String,
-    drawerOpen: Boolean
+    drawerOpen: Boolean,
+    publicPath:String
   },
   components: {
     StatusLED
@@ -94,6 +99,10 @@ export default {
         document.exitFullscreen();
         this.isFullScreen = false;
       }
+    },
+    disconnectFromServer(){
+      this.settingsOpened = false;
+      this.$emit('disconnectFromServer');
     }
   }
 };
@@ -137,7 +146,7 @@ header span:last-child > span {
   position: absolute;
   display: block;
   left: 0;
-  top: -200px;
+  top: -400px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -162,9 +171,5 @@ header span:last-child > span {
 .settings input {
   width: 100%;
   text-align: center;
-}
-
-hr {
-  border-color: $primaryLight;
 }
 </style>

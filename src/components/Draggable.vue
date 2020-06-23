@@ -8,7 +8,7 @@
       <slot name="header"></slot>
     </header>
     <div
-     class="content slo"
+     class="content"
       v-if="opened"
     >
       <slot name="content">
@@ -24,28 +24,23 @@ export default {
   name: "Draggable",
   data() {
     return {
-      position: {
-        x: 0,
-        y: 0
-      },
-      size: {
-        width: 100,
-        height: 100
-      },
       opened: true
     };
   },
-  props: ["width", "height", "x", "y"],
+  props: ["defaultWidth", "defaultHeight", "window"],
   mounted() {
 
-    // Set start size and position from props
-    if(this.x && this.y){
-      this.position.x = this.x;
-      this.position.y = this.y;
+    // // Set start size and position from props
+    // if(this.x && this.y){
+    //   this._window.position.x = this.x;
+    //   this._window.position.y = this.y;
+    // }
+    if(this.defaultWidth && !this._window.size.width){
+      this._window.size.width = this.defaultWidth;
     }
-    if(this.width && this.height){
-      this.size.width = this.width;
-      this.size.height = this.height;
+    
+    if(this.defaultHeight && !this._window.size.height){
+          this._window.size.height = this.defaultHeight;
     }
 
     let myDraggable = this.$refs.draggable;
@@ -84,10 +79,10 @@ export default {
         ]
       })
       .on("dragmove", event => {
-        this.position.x += event.dx;
-        this.position.y += event.dy;
+        this._window.position.x += event.dx;
+        this._window.position.y += event.dy;
         this.$emit('updateWindow', {
-          position:this.position
+          position:this._window.position
         })
         // event.target.style.webkitTransform =
         // event.target.style.transform =
@@ -98,8 +93,8 @@ export default {
         // event.target.style.gridArea = Math.round(this.position.y / 60) +'/'+Math.round(this.position.x / 60) +'/'+  'span ' + Math.round(this.size.height / 60) +'/'+'span ' + Math.round(this.size.width / 60);
       })
       .on("resizemove", event => {
-        this.size.width = event.rect.width;
-        this.size.height = event.rect.height;
+        this._window.size.width = event.rect.width;
+        this._window.size.height = event.rect.height;
         // event.target.style.gridArea = Math.round(this.position.y / 60) +'/'+Math.round(this.position.x / 60) +'/'+  'span ' + Math.round(this.size.height / 60) +'/'+'span ' + Math.round(this.size.width / 60);
         // event.target.style.width = event.rect.width + 'px';
         // event.target.style.height = event.rect.height + 'px';
@@ -111,23 +106,28 @@ export default {
   computed: {
     style() {
       let style = "";
-      if (this.position.x || this.position.y) {
-        style +=
-          "transform: translate(" +
-          this.position.x +
-          "px, " +
-          this.position.y +
-          "px);";
+      if (this._window.position.x || this._window.position.y) {
+        // style +=
+        //   "transform: translate(" +
+        //   this._window.position.x +
+        //   "px, " +
+        //   this._window.position.y +
+        //   "px);";
+        style += "top:"+ this._window.position.y + "px; left:"+ this._window.position.x+"px;"
       }
-      if (this.size.width || this.size.height) {
+      if (this._window.size.width || this._window.size.height) {
         style +=
           "width:" +
-          this.size.width +
+          this._window.size.width +
           "px; height:" +
-          this.size.height +
+          this._window.size.height +
           "px;";
       }
+
       return style;
+    },
+    _window(){
+      return this.window || {position:{x:null,y:null},size:{width:null,height:null}}
     }
   }
 };
@@ -150,6 +150,8 @@ export default {
   border-radius: $borderRadius;
   width: 200px;
   height: 40px;
+
+  position: absolute;
 }
 .window .content {
   font-size: 0.9em;

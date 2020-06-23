@@ -1,5 +1,5 @@
 <template>
-  <Draggable :class="editMode ? 'editing' : ''">
+  <Draggable :window="window" :defaultWidth="400" :defaultHeight="400" :class="editMode ? 'editing' : ''">
    <template v-slot:header>Stage Events
      <button class="icon" @click="editMode = !editMode" v-if="events.length>0" data-help="Toggle between edit & launch mode">
       {{editMode ? 'done' : 'create'}}
@@ -8,13 +8,17 @@
   <template v-slot:content>
     
      <div v-for="(event, index) in events" :key="index">
-        <button @click="$emit('stageEvent', event.to, event.code)" v-if="!editMode">
+        <button @click="$emit('sendStageEvent', event.target, event.id)" v-if="!editMode">
          {{event.label}}
         </button>
         <div v-else class="input-group">
-          <input type="text" v-model="event.label" />
-          <input type="text" v-model="event.code" />
-          <input type="text" v-model="event.to" />
+          <input type="text" v-model="event.label" data-help="The label for this event" />
+           <input type="hidden" v-model="event.type" value="stage"/>
+          <input type="text" v-model="event.id" data-help="The event ID sent to the client" />
+          <select v-model="event.target" data-help="The target stage">
+            <option value="*">all</option>
+            <option v-for="(stage,index) in stages" :key="index" :value="stage.id">#{{stage.id}}</option>
+          </select>
         </div>
      </div>
      <div v-if="editMode && events.length > 0">
@@ -42,35 +46,38 @@ export default {
     return {
       opened: true,
       editMode: false,
-      events:[]
     };
   },
   props: {
-    client: Object,
-    // events: Object
+    window: Object,
+    events:Array,
+    stages:Array
   },
   components:{
     Draggable
   },
-  mounted() {
-    console.log('yoiniy')
+  watch:{
+    editMode(){
+      if(this.editMode ===false && this.events.length !==0){
+        this.$emit('updateEvents', this.events);
+      }
+    }
   }
 }
 </script>
 
-<style scoped class="scss">
-.window{
-  width:300px;
-  height:200px;
-}
-.input-group input{
+<style scoped lang="scss">
+.input-group input,.input-group select{
   width:33%;
+  height:30px;
   border-radius: 0;
 }
-.input-group:first-child{
-  border-radius: $borderRadius 0;
+.input-group input:first-child{
+  border-radius: $borderRadius 0 0 $borderRadius !important;
+  border-right:none;
 }
-.input-group:last-child{
-  border-radius: 0 $borderRadius;
+.input-group input:last-child, .input-group select:last-child{
+  border-left:none;
+  border-radius: 0 $borderRadius $borderRadius 0!important;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <Draggable :width="400" :height="400">
+  <Window>
     <template v-slot:header>Welcome</template>
      <template v-slot:content>
       <div class="text-centered center">
@@ -9,7 +9,7 @@
       >
         <img src="@/assets/logo.svg" alt="Solvus Logo"/>
         <h1>solv.us <b>ui</b></h1>
-        <p>Please connect to an active server to use UI.</p>
+        <p>Please connect to an active server to proceed.</p>
         <hr/>
         <b>Server URI</b>&nbsp;<br />
         <input
@@ -22,7 +22,7 @@
 
       </div>
       <div v-else style="width:300px">
-        <p>There is no project running on this server yet. Open one:</p>
+        <p>There is no project running on this server. Open an existing project:</p>
 
         <select
           name="projects"
@@ -43,16 +43,16 @@
 
         <p>Or, create a new project:</p>
         <input type="text" v-model="newProjectName" placeholder="Project name"/>
-        <button @click="$emit('createProject', newProjectName)" :disabled="createButtonDisabled">Create empty project</button>
+        <button @click="$emit('createProject', newProjectName)" :disabled="createButtonDisabled">Create new project</button>
 
       </div>
       </div>
     </template>
-  </Draggable>
+  </Window>
 </template>
 
 <script>
-import Draggable from "./Draggable.vue";
+import Window from "./Window.vue";
 
 export default {
   name: "SetupWindow",
@@ -61,12 +61,11 @@ export default {
       opened: true,
       selectedProject: '',
       newProjectName:'',
-
     };
   },
   props: ["value", "connected", "projects"],
   components: {
-    Draggable
+    Window
   },
   computed:{
     // Disable create button if no name is specified, or the name already exists
@@ -83,5 +82,9 @@ h1 {
 }
 h1 b {
   font-weight: normal;
+}
+.window{
+  width:400px;
+  height:400px;
 }
 </style>

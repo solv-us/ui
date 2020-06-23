@@ -2,11 +2,14 @@
   <div id="app">
     <Header
       :activeProjectName="activeProject.name"
+      :publicPath="activeProject.publicPath"
       @closeProject="closeProject"
       @deleteProject="deleteProject"
       :serverURI="serverURI"
       :connected="connected"
       :drawerOpen="drawerOpen"
+      @toggleDrawer="toggleDrawer"
+      @disconnectFromServer="disconnectFromServer"
     ></Header>
     <div class="container">
       <WindowDrawer
@@ -21,9 +24,9 @@
         <div
           class="grid"
           ref="grid"
-          v-if="projectOpen&&connected&&(windows.length>0 || stages.length > 0)"
+          v-if="projectOpen&&connected&&(activeProject.windows.length>0 || stages.length > 0)"
         >
-          <StageWindow
+          <!-- <StageWindow
             class="draggable"
             v-for="(stage,index) in stages"
             :key="'s'+index"
@@ -31,43 +34,44 @@
             :clients="getClientsConnectedToStage(stage)"
             :files="files"
             @sendStageEvent="sendStageEvent"
-          ></StageWindow>
-          <template v-for="(window,index) in windows">
-            <StageWindow
-              :window="window"
-              class="draggable"
-              v-if="window.type==='Stage'"
-              :stage="stage"
-              :clients="getClientsConnectedToStage(stage)"
-              :files="files"
-              @sendStageEvent="sendStageEvent"
-              :key="index"
-            ></StageWindow>
+          ></StageWindow> -->
+          <template v-for="(window,index) in activeProject.windows">
             <ControlWindow
               v-if="window.type==='Control'"
               :window="window"
-              @start="sendStageEvent('*','start','timestamp')"
-              v-model="events"
+              @sendStageEvent="sendStageEvent"
               :key="index"
+              :events="activeProject.events"
+              :stages="stages"
+              @updateEvents="updateEvents"
             ></ControlWindow>
             <ClientWindow
               v-if="window.type==='Client'"
               :window="window"
               :clients="clients"
               :key="index"
+              :stages="activeProject.stages"
+              @forceToStage="forceToStage"
             ></ClientWindow>
-            <StagesWindow
+            <StageManagerWindow
               v-if="window.type==='Stages'"
               :window="window"
               :stages="stages"
               :key="index"
-            ></StagesWindow>
+              :clients="clients"
+              @sendStageEvent="sendStageEvent"
+            ></StageManagerWindow>
             <FileWindow
               v-if="window.type==='File'"
               :window="window"
               :files="files"
               :key="index"
             ></FileWindow>
+            <ClockWindow
+              v-if="window.type==='Clock'"
+              :window="window"
+              :key="index"
+            ></ClockWindow>
             <StagePreviewWindow
               v-if="window.type==='StagePreview'"
               :window="window"
@@ -77,7 +81,7 @@
           </template>
         </div>
         <div
-          class="center full-size grid"
+          class="grid center full-size"
           v-else
         >
           <SetupWindow
@@ -114,12 +118,13 @@
 <script>
 import interact from "interactjs";
 
-import StagesWindow from "./components/StagesWindow.vue";
-import StageWindow from "./components/StageWindow.vue";
+import StageManagerWindow from "./components/StageManagerWindow.vue";
+// import StageWindow from "./components/StageWindow.vue";
 import StagePreviewWindow from "./components/StagePreviewWindow.vue";
 import ControlWindow from "./components/ControlWindow.vue";
 import FileWindow from "./components/FileWindow.vue";
 import ClientWindow from "./components/ClientWindow.vue";
+import ClockWindow from "./components/ClockWindow.vue";
 import SetupWindow from "./components/SetupWindow.vue";
 
 import WindowDrawer from "./WindowDrawer.vue";
@@ -129,13 +134,14 @@ import io from "socket.io-client";
 export default {
   name: "App",
   components: {
-    StagesWindow,
-    StageWindow,
+    StageManagerWindow,
+   // StageWindow,
     StagePreviewWindow,
     ControlWindow,
     FileWindow,
     ClientWindow,
     SetupWindow,
+    ClockWindow,
     Header,
     WindowDrawer
   },
@@ -145,7 +151,11 @@ export default {
       files: [],
       clients: [],
       projects: [],
-      activeProject: {},
+      activeProject: {
+        publicPath:'',
+        windows:[],
+        events:[]
+      },
       serverURI: "",
       connected: false,
       projectOpen: false,
@@ -155,34 +165,20 @@ export default {
   },
   mounted() {
     //Check for remembered stuff
-    let serverURI = window.localStorage.getItem("serverURI");
+    let _serverURI = window.localStorage.getItem("serverURI");
 
-    if (serverURI) {
-      this.serverURI = serverURI;
+    if (_serverURI) {
+      this.serverURI = _serverURI;
     } else {
       this.serverURI =
         process.env.NODE_ENV === "development"
           ? window.location.hostname + ":8080"
           : window.location.host;
     }
-    this.$socket = io.connect(this.serverURI + "/ui");
+    this.$socket = io.connect(this.serverURI + "/ui", {path:'/sockets'});
     this.socketListeners();
 
-    interact(this.$refs.workspace).dropzone({
-      accept: ".drag-drop",
-      overlap: 0.75,
-      ondrop: event => {
-        this.drawerOpen = false;
-
-        let type = event.relatedTarget.getAttribute("data-type");
-        this.addWindow(
-          type,
-          event.dragEvent.client.x,
-          event.dragEvent.client.y
-        );
-      }
-    });
-
+    this.initializeDropzone();
     window.addEventListener("keydown", this.handleKeyEvent, true);
   },
   methods: {
@@ -192,7 +188,7 @@ export default {
       if (exclude.indexOf(event.target.tagName.toLowerCase()) === -1) {
         switch (event.key) {
           case "d":
-            this.drawerOpen = !this.drawerOpen;
+            this.toggleDrawer();
             break;
           case "l":
             this.workspaceIsLocked = !this.workspaceIsLocked;
@@ -201,11 +197,16 @@ export default {
       }
       return;
     },
-    addWindow(type, x, y) {
-      this.activeProject.windows.push({ type, position: { x, y } });
+    updateEvents(){
+      this.$socket.emit('updateEvents', this.activeProject.events);
     },
-    sendStageEvent(to, event, data = "") {
-      this.$socket.emit("stageEvent", to, event, data);
+    addWindow(type, x, y) {
+      this.activeProject.windows.push({ type, position: { x, y }, size:{width:null,height:null} });
+      this.$socket.emit('updateWindows',this.activeProject.windows)
+    },
+    sendStageEvent(to, event, data ="") {
+      console.log('stage event')
+      this.$socket.emit("sendStageEvent", to, event, data);
     },
     openProject(projectName) {
       this.$socket.emit("openProject", projectName);
@@ -223,6 +224,7 @@ export default {
       );
       if (areYouSure === this.activeProject.name) {
         this.$socket.emit("deleteProject");
+        this.resetActiveProject();
       } else if (areYouSure === null) {
         return;
       } else {
@@ -232,6 +234,9 @@ export default {
     createProject(projectName) {
       this.$socket.emit("createProject", projectName);
     },
+    forceToStage(clientId,stageId){
+      this.$socket.emit('forceToStage',clientId,stageId)
+    },
     socketListeners() {
       this.$socket.on("projects", projects => {
         this.projects = projects;
@@ -239,9 +244,8 @@ export default {
       this.$socket.on("projectUpdate", project => {
         if (project) {
           this.activeProject = project;
-          this.stages = project.stages;
-          this.windows = project.windows;
-          console.log(project);
+         this.stages = project.stages;
+          //this.windows = project.windows;
           if (!this.projectOpen) this.projectOpen = true;
         } else {
           this.activeProject = {};
@@ -269,6 +273,45 @@ export default {
     },
     getClientsConnectedToStage(stage) {
       return this.clients.filter(x => x.data.stageId == stage.id);
+    },
+    initializeDropzone(){
+       interact(this.$refs.workspace).dropzone({
+        accept: ".drag-drop",
+        overlap: 0.75,
+        ondrop: event => {
+          this.drawerOpen = false;
+          console.log(event.dragEvent)
+          let type = event.relatedTarget.getAttribute("data-type");
+          this.addWindow(
+            type,
+            event.dragEvent.clientX0,
+            event.dragEvent.clientY0
+          );
+        }
+      });
+
+    },
+    toggleDrawer(){
+      this.drawerOpen = !this.drawerOpen;
+    },
+    disconnectFromServer(){
+      this.serverURI = '';
+      this.resetActiveProject();
+
+    },
+    resetActiveProject(){
+      this.activeProject = { 
+        windows:[],
+        events:[]
+      };
+      this.clients = [];
+      this.files = [];
+    }
+  },
+  computed:{
+    // See https://github.com/vuejs/vue/issues/2164
+    activeProjectWatch(){
+      return Object.assign({}, this.activeProject);
     }
   },
   watch: {
@@ -278,18 +321,18 @@ export default {
       },
       deep: true
     },
-    windows: {
-      handler(windows) {
-        this.$socket.emit("updateWindows", windows);
-      },
-      deep: true
-    },
     serverURI() {
       window.localStorage.setItem("serverURI", this.serverURI);
 
       this.$socket.close();
-      this.$socket = io.connect(this.serverURI + "/ui");
+      this.$socket = io.connect(this.serverURI + "/ui", {path:'/sockets'});
       this.socketListeners();
+    },
+    activeProjectWatch:{
+      deep:true,
+      handler(){
+          this.$socket.emit('updateWindows', this.activeProject.windows)
+      }
     }
   }
 };
@@ -329,7 +372,7 @@ html,
   right: 0;
   padding: $inputPadding;
 }
-.grid {
+.workspace>.grid {
   background-image: radial-gradient($primaryDisabled 1px, transparent 0);
   background-size: 20px 20px;
   background-position: -10px -10px;
@@ -341,6 +384,10 @@ html,
   padding-top: 60px;
   width: 2000px;
   height: 2000px;
-  position: lll;
+  position: relative;
+}
+.workspace>.grid.full-size{
+  width:100%;
+  height:100%;
 }
 </style>

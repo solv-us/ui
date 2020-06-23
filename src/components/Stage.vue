@@ -1,5 +1,5 @@
 <template>
-   <Draggable :window="window" :defaultWidth="200" :defaultHeight="150">
+   <Window>
     <template v-slot:header>Stage #{{stage.id}} ({{ clientsReady }}/{{ clients.length }})
       <StatusLED :connected="clientsReady > 0" data-help="This light turns green when at least 1 connected client is ready for perfomance"></StatusLED>
     </template>
@@ -9,18 +9,20 @@
        <select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
-      <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')" :data-help="'Send the \'start\' event to Stage #'+stage.id">start</button>
+      <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')" :data-help="'Send the \'start\' event to Stage #'+stage.id">Start</button> 
+      <button @click="$emit('sendStageEvent',stage.id,'stop','timestamp')" :data-help="'Send the \'stop\' event to Stage #'+stage.id">Stop</button> 
+      <button @click="$emit('sendStageEvent',stage.id,'toggleStandby','')" :data-help="'Send the \'toggleStandby\' event to Stage #'+stage.id">Toggle Standby Screen</button>
     </template>
 
-   </Draggable>
+   </Window>
 </template>
 
 <script>
-import Draggable from './Draggable.vue'
+import Window from './Window.vue'
 import StatusLED from './StatusLED.vue'
 
 export default {
-  name: 'StageWindow',
+  name: 'Stage',
   data(){
     return {
       opened: false
@@ -38,7 +40,7 @@ export default {
     }
   },
   components:{
-    Draggable,
+    Window,
     StatusLED
   }
 }

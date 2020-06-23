@@ -1,11 +1,11 @@
 <template>
-   <Draggable>
+   <Draggable :window="window" :defaultWidth="580" :defaultHeight="360">
     <template v-slot:header>Stage Preview
         <input type="text" v-model="URL">
     </template>
 
     <template v-slot:content>
-      <iframe :src="serverURI + URL" allowfullscreen scrolling="no">
+      <iframe :src="URL" allowfullscreen scrolling="no">
       </iframe>
     </template>d
    </Draggable>
@@ -18,11 +18,12 @@ export default {
   name: 'StagePreviewWindow',
   data(){
     return {
-      URL: '/stage?id=1'
+      URL: 'http://localhost:5000/examples/basic?serverURI=https://169.254.66.53:8843&stageId=2'
     };
   },
   props:{
-    serverURI: String
+    serverURI: String,
+    window:Object
   },
   components:{
     Draggable,
@@ -31,10 +32,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.window{
-width:580px;
-height:360px;
-}
 .window.content{
   padding:0!important;
 }
@@ -44,7 +41,8 @@ iframe{
   height:100%;
 }
 input{
-  padding: 0;
-
+  margin: 0;
+  width:100%;
 }
+header{padding:0;}
 </style>

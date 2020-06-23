@@ -3,15 +3,16 @@
     class="window-drawer"
     :class="drawerOpen ? 'open' : ''"
   >
-  <button @click="addStage">Add a stage</button>
-  <hr>
+  <!-- <button @click="addStage">Add a stage</button> 
+  <hr>-->
   <p>Drag a window to the workspace to instantiate it</p>
-    <button class="drag-drop" data-type="Control">Controls</button>
-    <button class="drag-drop" data-type="Client" data-help="List of connected clients">Clients</button>
-    <button class="drag-drop" data-type="Stages" data-help="The Stage Manager">Stages</button>
+    <button class="drag-drop" data-type="Control">Stage Events</button>
+    <button class="drag-drop" data-type="Clock" data-help="A Clock">Clock</button>
+    <button class="drag-drop" data-type="Client" data-help="List of connected clients">Connected Clients</button>
+    <button class="drag-drop" data-type="Stages" data-help="The Stage Manager">Stage Manager</button>
     <!-- <button class="drag-drop" data-type="Stage">Stage</button> -->
     <button class="drag-drop" data-type="StagePreview" data-help="A preview of the stage">Stage Preview</button>
-     <button class="drag-drop" data-type="File" data-help="A File Browser">File</button>
+     <button class="drag-drop" data-type="File" data-help="A File Browser">File Browser</button>
   </aside>
 </template>
 

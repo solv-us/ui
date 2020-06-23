@@ -1,12 +1,20 @@
 <template>
-  <Draggable>
-   <header>Files</header>
-   <div class="content" v-if="opened">
+  <Draggable :window="window" :defaultWidth="300" :defaultHeight="400">
+   <template v-slot:header>
+     Files  
+  </template>
+ <template v-slot:content>
+    <input
+          type="text"
+          :value="publicPath"
+          date-help="the media path"
+        />
+      <hr/>
     <select name="files" v-model="selectedFile" size="4">
         <option v-for="(file,index) in files" :value="index" :key="index">{{file.name}}</option>
     </select>
-    {{files[selectedFile]}}
-   </div>
+
+  </template>
   </Draggable>
 </template>
 
@@ -22,7 +30,9 @@ export default {
     };
   },
   props: {
-    files:Array
+    files:Array,
+    publicPath:String,
+    window:Object
   },
   components:{
     Draggable
@@ -33,7 +43,10 @@ export default {
 </script>
 
 <style scoped>
-.window{
-  grid-row: span 3;
+select{
+  height:100%;
+}
+input{
+  margin-top:0;
 }
 </style>

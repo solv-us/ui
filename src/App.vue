@@ -214,8 +214,7 @@ export default {
       this.activeProject.windows.push({ type, position: { x, y }, size:{width:null,height:null} });
       this.$socket.emit('updateWindows',this.activeProject.windows)
     },
-    sendStageEvent(to, event, data ="") {
-      console.log('stage event')
+    sendStageEvent(to, event, data) {
       this.$socket.emit("sendStageEvent", to, event, data);
     },
     openProject(projectName) {

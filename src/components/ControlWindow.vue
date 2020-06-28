@@ -8,7 +8,7 @@
   <template v-slot:content>
     
      <div v-for="(event, index) in events" :key="index">
-        <button @click="$emit('sendStageEvent', event.target, event.id)" v-if="!editMode">
+        <button @click="$emit('sendStageEvent', event.target, event.id, event.data)" v-if="!editMode">
          {{event.label}}
         </button>
         <div v-else class="input-group">

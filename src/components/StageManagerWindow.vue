@@ -36,6 +36,16 @@
           @sendStageEvent="sendStageEvent"
         ></Stage>
       </div>
+      <div v-if="stages.length < 1" class="center text-centered">
+        <div>
+          <i
+            class="material-icons md-48"
+          >tv</i>
+          <p>No stages defined</p>
+          <button @click="addStage">Add a Stage</button>
+        </div>
+      </div>
+
       </div>
     </template>
   </Draggable>

@@ -9,7 +9,7 @@ button {
   transition: 0.2s background, 0.2s border-color, 0.2s color;
   margin: $inputMargin;
   border-radius:$borderRadius;
-  &:hover {
+  &:hover, &:active, &.active {
     border: 1px solid$primaryDark;
     background:  $primaryLight;
   }
@@ -18,7 +18,7 @@ button {
 
 button.danger {
   border-color: $danger;
-  &:hover {
+  &:hover, &:active, &.active {
     background: $danger;
   }
 }

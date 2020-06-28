@@ -12,7 +12,8 @@
     <button class="drag-drop" data-type="Stages" data-help="The Stage Manager">Stage Manager</button>
     <!-- <button class="drag-drop" data-type="Stage">Stage</button> -->
     <button class="drag-drop" data-type="StagePreview" data-help="A preview of the stage">Stage Preview</button>
-     <button class="drag-drop" data-type="File" data-help="A File Browser">File Browser</button>
+    <button class="drag-drop" data-type="MidiMapping" data-help="MIDI Mapping">MIDI Mapping</button>
+   <button class="drag-drop" data-type="File" data-help="A File Browser">File Browser</button>
   </aside>
 </template>
 

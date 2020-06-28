@@ -1,8 +1,8 @@
 <template>
   <Draggable :window="window" :defaultWidth="240" :defaultHeight="300">
-  <template v-slot:header>Connected Clients</template>
+  <template v-slot:header>Connected Clients ({{clients.length}})</template>
    <template v-slot:content>
-    <div class="grid">
+    <div class="grid" v-if="clients.length>0">
 
       <select name="clients" size="5" v-model="selectedClientKey">
           <option v-for="(client,index) in clients" :value="index" :key="index">{{client.id }}</option>
@@ -22,6 +22,14 @@
 
       </div>
     </div>
+     <div v-if="clients.length<1" class="center text-centered">
+        <div>
+          <i
+            class="material-icons md-48"
+          >cloud_off</i>
+          <p>There are no active clients connected to this server</p>
+        </div>
+      </div>
    </template>
   </Draggable>
 </template>

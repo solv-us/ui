@@ -78,6 +78,14 @@
               :serverURI="serverURI"
               :key="index"
             ></StagePreviewWindow>
+            <MidiMappingWindow
+              v-if="window.type==='MidiMapping'"
+              :window="window"
+              :key="index"
+              :mappings="activeProject.midiMappings"
+              :stages="stages"
+              @updateMidiMappings="updateMidiMappings"
+            ></MidiMappingWindow>
           </template>
         </div>
         <div
@@ -126,6 +134,7 @@ import FileWindow from "./components/FileWindow.vue";
 import ClientWindow from "./components/ClientWindow.vue";
 import ClockWindow from "./components/ClockWindow.vue";
 import SetupWindow from "./components/SetupWindow.vue";
+import MidiMappingWindow from "./components/MidiMappingWindow.vue"
 
 import WindowDrawer from "./WindowDrawer.vue";
 import Header from "./components/Header.vue";
@@ -136,6 +145,7 @@ export default {
   components: {
     StageManagerWindow,
    // StageWindow,
+    MidiMappingWindow,
     StagePreviewWindow,
     ControlWindow,
     FileWindow,
@@ -196,6 +206,9 @@ export default {
     },
     updateEvents(){
       this.$socket.emit('updateEvents', this.activeProject.events);
+    },
+    updateMidiMappings(){
+      this.$socket.emit('updateMidiMappingss', this.activeProject.mappings);
     },
     addWindow(type, x, y) {
       this.activeProject.windows.push({ type, position: { x, y }, size:{width:null,height:null} });

@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import screenfull from "screenfull"
 import StatusLED from "./StatusLED.vue";
 
 export default {
@@ -84,21 +85,11 @@ export default {
   },
   methods: {
     requestFullScreen() {
-      let elem = document.querySelector("body");
-
-      if (!document.fullscreenElement) {
-        elem
-          .requestFullscreen()
-          .then((this.isFullScreen = true))
-          .catch(err => {
-            alert(
-              `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
-            );
-          });
-      } else {
-        document.exitFullscreen();
-        this.isFullScreen = false;
-      }
+        let element = document.querySelector("body");
+        if (screenfull.isEnabled) {
+            screenfull.toggle(element);
+           this.isFullScreen = !this.isFullScreen;
+        }
     },
     disconnectFromServer(){
       this.settingsOpened = false;

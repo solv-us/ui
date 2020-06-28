@@ -5,13 +5,16 @@
     </template>
 
     <template v-slot:content>
-      <span>Media:</span>
-       <select name="files" v-model="stage.media">
+      
+       
+         <!-- <span>Media:</span><select name="files" v-model="stage.media">
          <option v-for="(file,index) in files" :key="index">{{file.name}}</option>
        </select>
+      <hr/> -->
+      <button @click="$emit('sendStageEvent',stage.id,'toggleStandby','')" :data-help="'Send the \'toggleStandby\' event to Stage #'+stage.id">Toggle Standby Screen</button>
+      <hr/>
       <button @click="$emit('sendStageEvent',stage.id,'start','timestamp')" :data-help="'Send the \'start\' event to Stage #'+stage.id">Start</button> 
       <button @click="$emit('sendStageEvent',stage.id,'stop','timestamp')" :data-help="'Send the \'stop\' event to Stage #'+stage.id">Stop</button> 
-      <button @click="$emit('sendStageEvent',stage.id,'toggleStandby','')" :data-help="'Send the \'toggleStandby\' event to Stage #'+stage.id">Toggle Standby Screen</button>
     </template>
 
    </Window>

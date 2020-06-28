@@ -18,7 +18,7 @@ export default {
   name: 'StagePreviewWindow',
   data(){
     return {
-      URL: 'http://localhost:5000/examples/basic?serverURI=https://169.254.66.53:8843&stageId=2'
+      URL: 'http://localhost:5000/examples/basic'
     };
   },
   props:{

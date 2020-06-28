@@ -24,7 +24,7 @@
         <div
           class="grid"
           ref="grid"
-          v-if="projectOpen&&connected&&(activeProject.windows.length>0 || stages.length > 0)"
+          v-if="projectOpen&&connected&&(activeProject.windows.length>0)"
         >
           <!-- <StageWindow
             class="draggable"
@@ -71,6 +71,10 @@
               v-if="window.type==='Clock'"
               :window="window"
               :key="index"
+              :time="time"
+              @setTempo="setTempo"
+              @startMainClock="startMainClock"
+              @stopMainClock="stopMainClock"
             ></ClockWindow>
             <StagePreviewWindow
               v-if="window.type==='StagePreview'"
@@ -166,6 +170,11 @@ export default {
         windows:[],
         events:[]
       },
+      time:{
+        bar:1,
+        beat:1,
+        division:1
+      },
       serverURI: "",
       connected: false,
       projectOpen: false,
@@ -223,6 +232,15 @@ export default {
     closeProject() {
       this.$socket.emit("closeProject");
     },
+    setTempo(tempo){
+       this.$socket.emit("setTempo", tempo);
+    },
+    startMainClock(){
+       this.$socket.emit("startMainClock");
+    },
+    stopMainClock(){
+       this.$socket.emit("stopMainClock");
+    },
     deleteProject() {
       let areYouSure = prompt(
         " This action cannot be undone. This will permanently delete the '" +
@@ -271,6 +289,9 @@ export default {
       });
       this.$socket.on("filesUpdate", files => {
         this.files = files;
+      });
+       this.$socket.on("timeUpdate", time => {
+        this.time = time;
       });
 
       this.$socket.on("connect", () => {

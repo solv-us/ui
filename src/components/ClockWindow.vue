@@ -1,11 +1,11 @@
 <template>
   <Draggable :window="window" :defaultWidth="400" :defaultHeight="180">
    <template v-slot:header>
-     Clock [WIP] [{{ bpm }} BPM]
+     Clock [{{ bpm }} BPM]
    </template>
   <template v-slot:content>
     <div class="flex-grid">
-      <h1>00:00:00:00</h1>
+      <h1>{{time.bar}}:{{time.beat}}:{{time.division}}</h1>
       <div class="button-group pull-bottom">
         <button data-help="Decrease BPM" @click="bpm-=1">
           -
@@ -16,7 +16,7 @@
         <button data-help="Divide BPM by 2" @click="bpm=Math.round(bpm/2)">
           /2
         </button>
-        <button data-help="Multiply BPM by 2" @click="bpm==Math.round(bpm*2)">
+        <button data-help="Multiply BPM by 2" @click="bpm=Math.round(bpm*2)">
           *2
         </button>
         <!-- <button data-help="Temporarily increase">
@@ -25,14 +25,14 @@
         <button data-help="Set BPM by tappinh">
           |-
         </button> -->
-        <button data-help="Set the BPM by tapping this button in the rhythm of the music">
+        <button data-help="Set the BPM by tapping this button in the rhythm of the music" @click="$emit('tapTempo')">
           TapTempo
         </button>
-        <button data-help="Set BPM by tappinh">
+        <button data-help="Start Clock" @click="$emit('startMainClock')">
           Start
         </button>
-        <button data-help="Set BPM by tappinh">
-          Reset
+        <button data-help="Stop Clock" @click="$emit('stopMainClock')">
+          Stop
         </button>
       </div>
     </div>
@@ -49,14 +49,20 @@ export default {
     Draggable
   },
   props:{
-    window:Object
+    window:Object,
+    time:Object,
   },
   data(){
     return{
       bpm:120
     }
+  },
+  watch:{
+    bpm(){
+      this.$emit('setTempo', this.bpm)
+    }
   }
- 
+
 }
 </script>
 

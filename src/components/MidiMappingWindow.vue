@@ -38,9 +38,10 @@
         </div>
      </div>
 
-     <div v-if="learnMode && mappings.length > 0">
+     <div v-if="mappings.length > 0">
        <button @click="mappings.push({label:'', id:'', target:'*'})">+</button>
      </div>
+     
       <div v-if="mappings.length < 1" class="center text-centered">
         <div>
           <i
